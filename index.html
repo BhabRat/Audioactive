@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audioactive</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-mode">
+    <div class="app-container">
+
+        <!-- Topbar -->
+        <header class="topbar">
+            <input type="text" id="searchBar" placeholder="Search audiobooks..." />
+            <button id="darkModeToggle">🌓</button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content full-width">
+            <section class="library-section">
+                <ul id="bookList" class="book-grid"></ul>
+            </section>
+        </main>
+
+        <!-- Footer Player -->
+        <footer class="footer-player">
+            <div class="media-meta">
+                <img id="thumbnail" src="" alt="Cover" />
+                <div>
+                    <div id="title">Select a Book</div>
+                    <div id="meta" class="meta-info"></div>
+                </div>
+            </div>
+
+            <div class="media-controls">
+                <audio id="audio" controls></audio>
+                <input type="range" id="progress" value="0" max="100" />
+
+                <div class="control-row">
+                    <button id="rewindBtn">⏪ 10s</button>
+                    <button id="playPauseBtn">▶️</button>
+                    <button id="forwardBtn">⏩ 10s</button>
+
+                    <input type="range" id="volume" value="100" max="100" />
+
+                    <select id="speed">
+                        <option value="0.75">0.75x</option>
+                        <option value="1" selected>1x</option>
+                        <option value="1.25">1.25x</option>
+                        <option value="1.5">1.5x</option>
+                        <option value="2">2x</option>
+                    </select>
+
+                    <button id="bookmarkBtn">🔖 Bookmark</button>
+                    <button id="sleep5">💤 5min</button>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
+
