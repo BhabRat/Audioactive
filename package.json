@@ -1,7 +1,7 @@
 {
-  "name": "Audioactive",
+  "name": "audioactive",
   "version": "1.0.0",
-  "description": "A sleek Electron-based audiobook player with chapter progress, bookmarks, and more.",
+  "description": "A sleek Electron-based audiobook player with folder organization, thumbnail caching, and fast playback.",
   "main": "main.js",
   "scripts": {
     "start": "electron ."

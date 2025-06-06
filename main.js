@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const mm = require('music-metadata');
+const crypto = require('crypto');
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -85,26 +86,28 @@ ipcMain.handle('get-audio-files', async () => {
 ipcMain.handle('get-thumbnail', async (event, relativePath) => {
     try {
         const fullPath = path.join(__dirname, relativePath);
-        const metadata = await mm.parseFile(fullPath);
-        const picture = metadata.common.picture?.[0];
-        const chapters = metadata.chapters || [];
+        const cacheDir = path.join(audioDir, '.cache');
+        const hash = crypto.createHash('md5').update(relativePath).digest('hex');
+        const cachePath = path.join(cacheDir, `${hash}.jpg`);
 
-        let cover = null;
-        if (picture) {
-            const base64 = Buffer.from(picture.data).toString('base64');
-            cover = `data:${picture.format};base64,${base64}`;
+        if (fs.existsSync(cachePath)) {
+            const base64 = fs.readFileSync(cachePath).toString('base64');
+            return { cover: `data:image/jpeg;base64,${base64}` };
         }
 
-        return {
-            cover,
-            chapters: chapters.map(ch => ({
-                title: ch.title || 'Untitled',
-                start: ch.start
-            }))
-        };
+        const metadata = await mm.parseFile(fullPath);
+        const picture = metadata.common.picture?.[0];
+        if (picture) {
+            if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true });
+
+            fs.writeFileSync(cachePath, picture.data);
+            const base64 = picture.data.toString('base64');
+            return { cover: `data:${picture.format};base64,${base64}` };
+        }
     } catch (err) {
-        console.error("Metadata error:", err);
-        return { cover: null, chapters: [] };
+        console.error("Thumbnail error:", err);
     }
+
+    return { cover: null };
 });
 
